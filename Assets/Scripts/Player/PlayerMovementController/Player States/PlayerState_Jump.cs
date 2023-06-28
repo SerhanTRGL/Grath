@@ -6,25 +6,35 @@ public class PlayerState_Jump : PlayerState{
     private Rigidbody2D m_playerRigidBody;
     private float m_playerJumpSpeed;
     public override void EnterState(PlayerStateMachine playerStateMachine){
+        //Animation logic, move somewhere else
         playerStateMachine.Player.CharacterAnimator.SetBool("isJumping", true);
+        //------------------------------------
 
-        m_playerRigidBody = playerStateMachine.Player.PlayerRigidBody;
-        m_playerJumpSpeed = playerStateMachine.Player.PlayerJumpSpeed;
-        m_playerRigidBody.velocity = new Vector2(m_playerRigidBody.velocity.x, m_playerJumpSpeed);
-        playerStateMachine.Player.HasJumped = true;
+        Player player = playerStateMachine.Player;
+        m_playerRigidBody = player.PlayerRigidBody;
+        m_playerJumpSpeed = player.PlayerJumpSpeed;
+        
+
+        //Dust effect, move somewhere else
         playerStateMachine.Player.MovementDustParticleSystem.Play();
-        Debug.Log("Entered player state: jump");
+        //--------------------------------
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){
+        //Animation logic, move somewhere else
         if(m_playerRigidBody.velocity.y < 0.1f){
             playerStateMachine.Player.CharacterAnimator.SetBool("isJumping", false);
         }
-        Debug.Log("Exit player state: jump");
+        //------------------------------------
     }
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
+        bool hasNotJumped = !playerStateMachine.Player.HasJumped;
         
+        if(hasNotJumped){
+            m_playerRigidBody.velocity = new Vector2(m_playerRigidBody.velocity.x, m_playerJumpSpeed);
+            playerStateMachine.Player.HasJumped = true;
+        }
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
