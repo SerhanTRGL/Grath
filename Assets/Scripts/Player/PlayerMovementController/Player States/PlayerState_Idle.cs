@@ -4,25 +4,19 @@ using UnityEngine;
 
 public class PlayerState_Idle : PlayerState{
     public override void EnterState(PlayerStateMachine playerStateMachine){
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isIdle", true);
+        playerStateMachine.Player.CharacterAnimator.SetBool("isIdle", true);
         Debug.Log("Entered player state: idle");
-        playerStateMachine.m_player.HasJumped = false;
-    }
-
-    public override void ExecuteState(PlayerStateMachine playerStateMachine){
-        Debug.Log("Idle");
-        HandleStateLogic(playerStateMachine);
-        HandleStateSwitchLogic(playerStateMachine);
+        playerStateMachine.Player.HasJumped = false;
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){
         Debug.Log("Exiting player state: idle");
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isIdle", false);
+        playerStateMachine.Player.CharacterAnimator.SetBool("isIdle", false);
     }
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
-        if(playerStateMachine.m_player.PlayerRigidBody.velocity.y < 0.1f){
-            playerStateMachine.m_player.CharacterAnimator.SetBool("isJumping", false);
+        if(playerStateMachine.Player.PlayerRigidBody.velocity.y < 0.1f){
+            playerStateMachine.Player.CharacterAnimator.SetBool("isJumping", false);
         }
     }
 

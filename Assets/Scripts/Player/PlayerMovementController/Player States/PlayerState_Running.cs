@@ -7,29 +7,23 @@ public class PlayerState_Running : PlayerState{
     private float m_playerSpeed;
     private float m_horizontalInput;
     public override void EnterState(PlayerStateMachine playerStateMachine){
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isRunning", true);
-        m_playerRigidBody = playerStateMachine.m_player.PlayerRigidBody;
-        m_playerSpeed = playerStateMachine.m_player.PlayerSpeed;
-        playerStateMachine.m_player.HasJumped = false;
+        playerStateMachine.Player.CharacterAnimator.SetBool("isRunning", true);
+        m_playerRigidBody = playerStateMachine.Player.PlayerRigidBody;
+        m_playerSpeed = playerStateMachine.Player.PlayerSpeed;
+        playerStateMachine.Player.HasJumped = false;
         Debug.Log("Entered player state: running");
     }
 
-    public override void ExecuteState(PlayerStateMachine playerStateMachine){
-        Debug.Log("Running");
-        HandleStateLogic(playerStateMachine);
-        HandleStateSwitchLogic(playerStateMachine);
-    }
-
     public override void ExitState(PlayerStateMachine playerStateMachine){
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isRunning", false);
+        playerStateMachine.Player.CharacterAnimator.SetBool("isRunning", false);
         Debug.Log("Exiting player state: running");
     }
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
         if(m_playerRigidBody.velocity.y < 0.1f){
-            playerStateMachine.m_player.CharacterAnimator.SetBool("isJumping", false);
+            playerStateMachine.Player.CharacterAnimator.SetBool("isJumping", false);
         }
-        playerStateMachine.m_player.MovementDustParticleSystem.Play();
+        playerStateMachine.Player.MovementDustParticleSystem.Play();
 
         m_horizontalInput = Input.GetAxisRaw("Horizontal");
         

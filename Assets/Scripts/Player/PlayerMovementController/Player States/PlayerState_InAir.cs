@@ -7,26 +7,20 @@ public class PlayerState_InAir : PlayerState{
     private float m_horizontalInput;
     private Rigidbody2D m_playerRigidBody;
     public override void EnterState(PlayerStateMachine playerStateMachine){
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isInAir", true);
-        m_playerRigidBody = playerStateMachine.m_player.PlayerRigidBody;
-        m_playerSpeed = playerStateMachine.m_player.PlayerSpeed;
+        playerStateMachine.Player.CharacterAnimator.SetBool("isInAir", true);
+        m_playerRigidBody = playerStateMachine.Player.PlayerRigidBody;
+        m_playerSpeed = playerStateMachine.Player.PlayerSpeed;
         Debug.Log("Entered player state: inAir");
     }
 
-    public override void ExecuteState(PlayerStateMachine playerStateMachine){
-        Debug.Log("InAir");
-        HandleStateLogic(playerStateMachine);
-        HandleStateSwitchLogic(playerStateMachine);
-    }
-
     public override void ExitState(PlayerStateMachine playerStateMachine){
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isInAir", false);
+        playerStateMachine.Player.CharacterAnimator.SetBool("isInAir", false);
         Debug.Log("Exiting player state: inAir");
     }
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
         if(m_playerRigidBody.velocity.y < 0.1f){
-            playerStateMachine.m_player.CharacterAnimator.SetBool("isJumping", false);
+            playerStateMachine.Player.CharacterAnimator.SetBool("isJumping", false);
         }
         m_horizontalInput = Input.GetAxisRaw("Horizontal");
         
@@ -75,7 +69,7 @@ public class PlayerState_InAir : PlayerState{
         }
 
        //Player pressed jump keys and has not jumped before going into this state
-        if((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && !playerStateMachine.m_player.HasJumped){
+        if((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && !playerStateMachine.Player.HasJumped){
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
     }

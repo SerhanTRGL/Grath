@@ -9,11 +9,6 @@ public class PlayerState_SpinThrowSword : PlayerState
         
     }
 
-    public override void ExecuteState(PlayerStateMachine player)
-    {
-        
-    }
-
     public override void ExitState(PlayerStateMachine player)
     {
         

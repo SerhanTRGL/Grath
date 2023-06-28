@@ -11,39 +11,37 @@ public class PlayerState_Dash : PlayerState{
     private float m_playerSpeed;
     
     public override void EnterState(PlayerStateMachine playerStateMachine){
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isDashing", true);
-        Debug.Log("Entered player state: dash");
-        m_playerRigidBody = playerStateMachine.m_player.PlayerRigidBody;
-        m_dashDuration = playerStateMachine.m_player.PlayerDashDuration;
-        m_dashTimer = 0f;
-        m_playerSpeed = playerStateMachine.m_player.PlayerSpeed;
-        m_playerLookDirection = playerStateMachine.m_player.PlayerRigidBody.transform.rotation.eulerAngles.y == 0 ? 1 : -1;
-        m_dashQuotient = playerStateMachine.m_player.PlayerDashQuotient;
-    }
+        //Animation logic, move somewhere else
+        playerStateMachine.Player.CharacterAnimator.SetBool("isDashing", true);
+        //------------------------------------
 
-    //Stay in dash state for dash duration
-    public override void ExecuteState(PlayerStateMachine playerStateMachine){
-        Debug.Log("Dash");
-        HandleStateLogic(playerStateMachine);
-        HandleStateSwitchLogic(playerStateMachine);
+        Player player = playerStateMachine.Player;
+        m_playerRigidBody = player.PlayerRigidBody;
+        m_dashDuration = player.PlayerDashDuration;
+        m_dashTimer = 0f;
+        m_playerSpeed = player.PlayerSpeed;
+        m_playerLookDirection = player.PlayerRigidBody.transform.rotation.eulerAngles.y == 0 ? 1 : -1;
+        m_dashQuotient = player.PlayerDashQuotient;
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isDashing", false);
-        Debug.Log("Exiting player state: dash");
+        //Animation logic, move somewhere else
+        playerStateMachine.Player.CharacterAnimator.SetBool("isDashing", false);
+        //------------------------------------
     }
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
+        //Animation logic, move somewhere else
         if(m_playerRigidBody.velocity.y < 0.1f){
-            playerStateMachine.m_player.CharacterAnimator.SetBool("isJumping", false);
+            playerStateMachine.Player.CharacterAnimator.SetBool("isJumping", false);
         }
-        if(m_dashTimer <= m_dashDuration){
-            m_dashTimer += Time.deltaTime;
-            m_playerRigidBody.velocity = new Vector2(m_playerSpeed * m_playerLookDirection * m_dashQuotient, m_playerRigidBody.velocity.y);
-        }
-        else{
-            m_playerRigidBody.velocity = new Vector2(0, m_playerRigidBody.velocity.y);
-        }
+        //------------------------------------
+        
+        float velocityY = m_playerRigidBody.velocity.y;
+        float velocityX = m_dashTimer <= m_dashDuration ? m_playerSpeed * m_playerLookDirection * m_dashQuotient : 0;
+
+        m_playerRigidBody.velocity = new Vector2(velocityX, velocityY);
+        m_dashTimer += Time.deltaTime;
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
@@ -72,7 +70,7 @@ public class PlayerState_Dash : PlayerState{
                 playerStateMachine.SwitchState(playerStateMachine.runningState);
             }
         }
-        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W) && !isInAir && !playerStateMachine.m_player.HasJumped){//Player jumps during dash and not in air
+        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W) && !isInAir && !playerStateMachine.Player.HasJumped){//Player jumps during dash and not in air
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
     }
