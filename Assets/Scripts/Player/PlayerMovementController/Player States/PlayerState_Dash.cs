@@ -69,8 +69,7 @@ public class PlayerState_Dash : PlayerState{
         }
     }
 
-    private bool IsInAir()
-    {
+    private bool IsInAir(){
         int groundLayerMask = LayerMask.GetMask("Ground");
 
         Vector2 direction = -m_playerRigidBody.transform.up;
