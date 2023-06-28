@@ -4,36 +4,39 @@ using UnityEngine;
 
 public class PlayerState_Idle : PlayerState{
     public override void EnterState(PlayerStateMachine playerStateMachine){
+        //Animation logic, move somewhere else
         playerStateMachine.Player.CharacterAnimator.SetBool("isIdle", true);
-        Debug.Log("Entered player state: idle");
+        //-----------------------------------
+
         playerStateMachine.Player.HasJumped = false;
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){
-        Debug.Log("Exiting player state: idle");
+        //Animation logic, move somewhere else
         playerStateMachine.Player.CharacterAnimator.SetBool("isIdle", false);
+        //-----------------------------------
     }
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
+        //Animation logic, move somewhere else
         if(playerStateMachine.Player.PlayerRigidBody.velocity.y < 0.1f){
             playerStateMachine.Player.CharacterAnimator.SetBool("isJumping", false);
         }
+        //-----------------------------------
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
+        bool dashKeyPressed = Input.GetKeyDown(KeyCode.LeftShift);
+        bool jumpKeyPressed = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W);
+        bool isMoving = Input.GetAxisRaw("Horizontal") != 0;
         
-        //Left Mouse Button Pressed
-        //if(Input.GetMouseButton(0)){playerStateMachine.SwitchState(playerStateMachine.attack1State);}
-        //Shift pressed
-        if(Input.GetKeyDown(KeyCode.LeftShift)){ 
+        if(dashKeyPressed){ 
             playerStateMachine.SwitchState(playerStateMachine.dashState);
         }
-        //Space pressed
-        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)){    
+        if(jumpKeyPressed){    
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
-        //A or D pressed
-        if(Input.GetAxisRaw("Horizontal") != 0){
+        if(isMoving){
             playerStateMachine.SwitchState(playerStateMachine.runningState);
         }
     }
