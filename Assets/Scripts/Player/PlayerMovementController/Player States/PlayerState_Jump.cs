@@ -11,8 +11,8 @@ public class PlayerState_Jump : PlayerState{
         //------------------------------------
 
         Player player = playerStateMachine.Player;
-        m_playerRigidBody = player.PlayerRigidBody;
-        m_playerJumpSpeed = player.PlayerJumpSpeed;
+        m_playerRigidBody = player.RigidBody;
+        m_playerJumpSpeed = player.JumpSpeed;
         
 
         //Dust effect, move somewhere else

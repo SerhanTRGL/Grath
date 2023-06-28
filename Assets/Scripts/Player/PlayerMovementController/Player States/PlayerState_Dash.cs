@@ -17,12 +17,12 @@ public class PlayerState_Dash : PlayerState{
 
         Player player = playerStateMachine.Player;
 
-        m_playerRigidBody = player.PlayerRigidBody;
-        m_dashDuration = player.PlayerDashDuration;
+        m_playerRigidBody = player.RigidBody;
+        m_dashDuration = player.DashDuration;
         m_dashTimer = 0f;
-        m_playerSpeed = player.PlayerSpeed;
-        m_playerLookDirection = player.PlayerRigidBody.transform.rotation.eulerAngles.y == 0 ? 1 : -1;
-        m_dashQuotient = player.PlayerDashQuotient;
+        m_playerSpeed = player.Speed;
+        m_playerLookDirection = player.RigidBody.transform.rotation.eulerAngles.y == 0 ? 1 : -1;
+        m_dashQuotient = player.DashQuotient;
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){

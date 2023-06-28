@@ -12,8 +12,8 @@ public class PlayerState_InAir : PlayerState{
         //------------------------------------
 
         Player player = playerStateMachine.Player;
-        m_playerRigidBody = player.PlayerRigidBody;
-        m_playerSpeed = player.PlayerSpeed;
+        m_playerRigidBody = player.RigidBody;
+        m_playerSpeed = player.Speed;
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){

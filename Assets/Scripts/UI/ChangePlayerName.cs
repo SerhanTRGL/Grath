@@ -8,7 +8,7 @@ public class ChangePlayerName : MonoBehaviour{
     public TextMeshProUGUI playerName;
     public Player player;
     void Update(){
-        playerName.text = player.PlayerName;
+        playerName.text = player.CharacterName;
         if(player.transform.rotation.eulerAngles.y == -180){
             canvasTransform.rotation = Quaternion.Euler(canvasTransform.rotation.eulerAngles.x, -180, canvasTransform.rotation.eulerAngles.z);
         }

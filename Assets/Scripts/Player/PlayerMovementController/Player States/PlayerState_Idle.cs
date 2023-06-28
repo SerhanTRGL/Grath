@@ -19,7 +19,7 @@ public class PlayerState_Idle : PlayerState{
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
         //Animation logic, move somewhere else
-        if(playerStateMachine.Player.PlayerRigidBody.velocity.y < 0.1f){
+        if(playerStateMachine.Player.RigidBody.velocity.y < 0.1f){
             playerStateMachine.Player.CharacterAnimator.SetBool("isJumping", false);
         }
         //-----------------------------------
