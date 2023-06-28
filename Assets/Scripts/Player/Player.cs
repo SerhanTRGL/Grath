@@ -47,5 +47,6 @@ public class Player : MonoBehaviour, IDamageable{
         Gizmos.DrawRay(this.transform.position, -this.transform.up);
         Vector3 offset = new Vector3(0, 0.85f, 0);
         Gizmos.DrawCube(PlayerRigidBody.transform.position - offset, new Vector3(1,0.1f,1));
+        Debug.DrawRay(transform.position, -transform.up, Color.green);
     }
 }

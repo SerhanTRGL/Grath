@@ -16,6 +16,7 @@ public class PlayerState_Dash : PlayerState{
         //------------------------------------
 
         Player player = playerStateMachine.Player;
+
         m_playerRigidBody = player.PlayerRigidBody;
         m_dashDuration = player.PlayerDashDuration;
         m_dashTimer = 0f;
@@ -45,33 +46,41 @@ public class PlayerState_Dash : PlayerState{
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
-        int groundLayerMask = LayerMask.GetMask("Ground");
-        Vector2 direction = -m_playerRigidBody.transform.up;
-        Debug.DrawRay(m_playerRigidBody.transform.position, -m_playerRigidBody.transform.up, Color.green);
-        
-        Vector3 offset = new Vector3(0, 0.85f, 0);
-        RaycastHit2D hit = Physics2D.BoxCast(
-                                            m_playerRigidBody.transform.position-offset,
-                                            new Vector2(1,0.1f),
-                                            0,
-                                            -m_playerRigidBody.transform.up,
-                                            1,
-                                            groundLayerMask);
-        bool isInAir = (hit.collider == null);
+        bool isDashDone = m_dashTimer >= m_dashDuration;
+        bool isInAir = this.IsInAir();
+        bool isStandingOnGround = m_playerRigidBody.velocity == Vector2.zero && !isInAir;
+        bool isRunning = Input.GetAxisRaw("Horizontal") != 0 || m_playerRigidBody.velocity.x != 0 && m_playerRigidBody.velocity.y == 0;
+        bool isJumping = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W) && !isInAir && !playerStateMachine.Player.HasJumped;
 
-        if(m_dashTimer >= m_dashDuration){
-            if(isInAir){//Player still in air after dash is complete
-            playerStateMachine.SwitchState(playerStateMachine.inAirState);
+        if (isDashDone){
+            if (isInAir){
+                playerStateMachine.SwitchState(playerStateMachine.inAirState);
             }
-            if(m_playerRigidBody.velocity == Vector2.zero && !isInAir){ //player stopped moving and not in air
+            if (isStandingOnGround){
                 playerStateMachine.SwitchState(playerStateMachine.idleState);
             }
-            if(Input.GetAxisRaw("Horizontal") != 0 || m_playerRigidBody.velocity.x != 0 && m_playerRigidBody.velocity.y == 0){ //Player still running after dash
+            if (isRunning){
                 playerStateMachine.SwitchState(playerStateMachine.runningState);
             }
         }
-        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W) && !isInAir && !playerStateMachine.Player.HasJumped){//Player jumps during dash and not in air
+        
+        if (isJumping){//Player jumps during dash and not in air
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
+    }
+
+    private bool IsInAir()
+    {
+        int groundLayerMask = LayerMask.GetMask("Ground");
+
+        Vector2 direction = -m_playerRigidBody.transform.up;
+        Vector3 offset = new Vector3(0, 0.85f, 0);
+        Vector3 origin = m_playerRigidBody.transform.position - offset;
+        Vector2 size = new Vector2(1, 0.1f);
+        float angle = 0f;
+        float distance = 1f;
+        RaycastHit2D hit = Physics2D.BoxCast(origin, size, angle, direction, distance, groundLayerMask);
+        bool isInAir = (hit.collider == null);
+        return isInAir;
     }
 }
