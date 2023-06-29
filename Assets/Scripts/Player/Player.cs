@@ -26,8 +26,9 @@ public class Player : MonoBehaviour, IDamageable{
     #endregion
 
     private PlayerStateMachine m_playerStateMachine = new PlayerStateMachine();
-    
+    public PlayerStatusWatcher _playerStatusWatcher;
     void Awake() {
+        _playerStatusWatcher = GetComponent<PlayerStatusWatcher>();
         this.RigidBody = GetComponent<Rigidbody2D>();
         this.MovementDustParticleSystem = GetComponentInChildren<ParticleSystem>();
     }
@@ -38,7 +39,9 @@ public class Player : MonoBehaviour, IDamageable{
         this.DashDuration = 0.2f;
         this.DashQuotient = 3;
         this.JumpSpeed = 20f;
-        this.HasJumped = false;
+
+        _playerStatusWatcher.hasJumped = false;
+        
         m_playerStateMachine.StartStateMachine(this);
     }
 

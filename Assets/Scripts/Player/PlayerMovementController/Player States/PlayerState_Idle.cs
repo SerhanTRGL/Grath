@@ -3,40 +3,42 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerState_Idle : PlayerState{
+    private Player player;
+    public PlayerState_Idle(PlayerStatusWatcher playerStatusWatcher) : base(playerStatusWatcher){
+        return;
+    }
+
     public override void EnterState(PlayerStateMachine playerStateMachine){
         //Animation logic, move somewhere else
         playerStateMachine.Player.CharacterAnimator.SetBool("isIdle", true);
         //-----------------------------------
 
-        playerStateMachine.Player.HasJumped = false;
+        player = playerStateMachine.Player;
+        _playerStatusWatcher.hasJumped = false;
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){
         //Animation logic, move somewhere else
-        playerStateMachine.Player.CharacterAnimator.SetBool("isIdle", false);
+        player.CharacterAnimator.SetBool("isIdle", false);
         //-----------------------------------
     }
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
         //Animation logic, move somewhere else
-        if(playerStateMachine.Player.RigidBody.velocity.y < 0.1f){
-            playerStateMachine.Player.CharacterAnimator.SetBool("isJumping", false);
+        if(player.RigidBody.velocity.y < 0.1f){
+            player.CharacterAnimator.SetBool("isJumping", false);
         }
         //-----------------------------------
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
-        bool dashKeyPressed = Input.GetKeyDown(KeyCode.LeftShift);
-        bool jumpKeyPressed = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W);
-        bool isMoving = Input.GetAxisRaw("Horizontal") != 0;
-        
-        if(dashKeyPressed){ 
+        if(_playerStatusWatcher.dashKeyPressed){ 
             playerStateMachine.SwitchState(playerStateMachine.dashState);
         }
-        if(jumpKeyPressed){    
+        if(_playerStatusWatcher.jumpKeyPressed){    
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
-        if(isMoving){
+        if(_playerStatusWatcher.isMoving){
             playerStateMachine.SwitchState(playerStateMachine.runningState);
         }
     }

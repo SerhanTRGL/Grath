@@ -3,38 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerState_Jump : PlayerState{
-    private Rigidbody2D m_playerRigidBody;
-    private float m_playerJumpSpeed;
+    private Player player;
+
+    public PlayerState_Jump(PlayerStatusWatcher playerStatusWatcher) : base(playerStatusWatcher){
+        return;
+    }
+
     public override void EnterState(PlayerStateMachine playerStateMachine){
+        player = playerStateMachine.Player;
         //Animation logic, move somewhere else
-        playerStateMachine.Player.CharacterAnimator.SetBool("isJumping", true);
+        player.CharacterAnimator.SetBool("isJumping", true);
         //------------------------------------
-
-        Player player = playerStateMachine.Player;
-        m_playerRigidBody = player.RigidBody;
-        m_playerJumpSpeed = player.JumpSpeed;
         
-
         //Dust effect, move somewhere else
-        playerStateMachine.Player.MovementDustParticleSystem.Play();
+        player.MovementDustParticleSystem.Play();
         //--------------------------------
+
+        
+        player.RigidBody.velocity = new Vector2(player.RigidBody.velocity.x, player.JumpSpeed);
+        _playerStatusWatcher.hasJumped = true;
+
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){
         //Animation logic, move somewhere else
-        if(m_playerRigidBody.velocity.y < 0.1f){
+        if(player.RigidBody.velocity.y < 0.1f){
             playerStateMachine.Player.CharacterAnimator.SetBool("isJumping", false);
         }
         //------------------------------------
     }
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
-        bool hasNotJumped = !playerStateMachine.Player.HasJumped;
-        
-        if(hasNotJumped){
-            m_playerRigidBody.velocity = new Vector2(m_playerRigidBody.velocity.x, m_playerJumpSpeed);
-            playerStateMachine.Player.HasJumped = true;
-        }
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
