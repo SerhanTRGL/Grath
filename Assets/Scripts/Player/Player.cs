@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//TODO: Fall stunned state add
+//FIXME: Animations 
 public class Player : MonoBehaviour, IDamageable{
     #region IDamageable Related
     [field: SerializeField] public int Health { get; set; }    
@@ -36,7 +38,7 @@ public class Player : MonoBehaviour, IDamageable{
         this.DashDuration = 0.2f;
         this.DashQuotient = 3;
         this.JumpSpeed = 20f;
-        
+
         m_playerStateMachine.StartStateMachine(this);
     }
 
