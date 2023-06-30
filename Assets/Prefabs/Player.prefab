@@ -5273,12 +5273,12 @@ MonoBehaviour:
   DashDuration: 0
   DashQuotient: 0
   JumpSpeed: 0
-  HasJumped: 0
   CharacterAnimator: {fileID: 0}
   SwordMountPoint: {fileID: 9074886180880815108}
-  RigidBody: {fileID: 0}
+  RigidBody: {fileID: 9074886182652629154}
   MovementDustParticleSystem: {fileID: 0}
   PlayerSword: {fileID: 0}
+  _playerStatusWatcher: {fileID: 0}
 --- !u!61 &9074886182652629166
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -7,8 +7,6 @@ public class SwordStateMachine{
     public SwordState currentState;
     public SwordState_Attack1 attack1State = new SwordState_Attack1();
     public SwordState_Attack2 attack2State = new SwordState_Attack2();
-    public SwordState_BossThrowSword bossThrowSwordState = new SwordState_BossThrowSword();
-    public SwordState_OnBoss onBossState = new SwordState_OnBoss();
     public SwordState_OnGround onGroundState = new SwordState_OnGround();
     public SwordState_OnPlayer onPlayerState = new SwordState_OnPlayer();
     public SwordState_SpinThrow spinThrowState = new SwordState_SpinThrow();

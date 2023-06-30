@@ -15,7 +15,6 @@ public class Player : MonoBehaviour, IDamageable{
     public float DashDuration;
     public float DashQuotient;
     public float JumpSpeed;
-    public bool HasJumped;
     
     #region References
     public Animator CharacterAnimator;
@@ -41,7 +40,7 @@ public class Player : MonoBehaviour, IDamageable{
         this.JumpSpeed = 20f;
 
         _playerStatusWatcher.hasJumped = false;
-        
+
         m_playerStateMachine.StartStateMachine(this);
     }
 
