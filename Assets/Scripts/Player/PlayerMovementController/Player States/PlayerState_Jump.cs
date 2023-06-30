@@ -5,11 +5,8 @@ using UnityEngine;
 public class PlayerState_Jump : PlayerState{
     private Player player;
 
-    public PlayerState_Jump(PlayerStatusWatcher playerStatusWatcher) : base(playerStatusWatcher){
-        return;
-    }
-
     public override void EnterState(PlayerStateMachine playerStateMachine){
+        Debug.Log("Jump");
         player = playerStateMachine.Player;
         //Animation logic, move somewhere else
         player.CharacterAnimator.SetBool("isJumping", true);
@@ -21,7 +18,7 @@ public class PlayerState_Jump : PlayerState{
 
         
         player.RigidBody.velocity = new Vector2(player.RigidBody.velocity.x, player.JumpSpeed);
-        _playerStatusWatcher.hasJumped = true;
+        playerStateMachine.hasJumped = true;
 
     }
 
@@ -34,9 +31,33 @@ public class PlayerState_Jump : PlayerState{
     }
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        if(horizontalInput != 0){
+            player.RigidBody.velocity = new Vector2(horizontalInput * player.Speed, player.RigidBody.velocity.y);
+        }
+        else{
+            player.RigidBody.velocity *= new Vector2(0.95f, 1);
+        }
+        
+        //Look right
+        if(horizontalInput > 0){
+            player.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+
+        //Look left
+        if(horizontalInput < 0){
+            player.transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
-        playerStateMachine.SwitchState(playerStateMachine.inAirState);
+        if(player.RigidBody.velocity.y < 0.01f){
+            playerStateMachine.SwitchState(playerStateMachine.inAirState);
+        }
+        
+        bool dashKeyPressed = Input.GetKeyDown(KeyCode.LeftShift);
+        if(dashKeyPressed){
+            playerStateMachine.SwitchState(playerStateMachine.dashState);
+        }
     }
 }

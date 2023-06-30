@@ -4,17 +4,15 @@ using UnityEngine;
 
 public class PlayerState_Idle : PlayerState{
     private Player player;
-    public PlayerState_Idle(PlayerStatusWatcher playerStatusWatcher) : base(playerStatusWatcher){
-        return;
-    }
 
     public override void EnterState(PlayerStateMachine playerStateMachine){
+        Debug.Log("Idle");
         //Animation logic, move somewhere else
         playerStateMachine.Player.CharacterAnimator.SetBool("isIdle", true);
         //-----------------------------------
 
         player = playerStateMachine.Player;
-        _playerStatusWatcher.hasJumped = false;
+        playerStateMachine.hasJumped = false;
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){
@@ -32,14 +30,24 @@ public class PlayerState_Idle : PlayerState{
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
-        if(_playerStatusWatcher.dashKeyPressed){ 
+        bool dashKeyPressed = Input.GetKeyDown(KeyCode.LeftShift);
+        bool jumpKeyPressed = Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space);
+        bool horizontalInputReceived = Input.GetAxisRaw("Horizontal") != 0;
+        
+        RaycastHit2D hit = Physics2D.Raycast(player.transform.position, -player.transform.up, 1, LayerMask.GetMask("Ground"));
+        bool isInAir = (hit.collider == null); 
+        
+        if(dashKeyPressed){ 
             playerStateMachine.SwitchState(playerStateMachine.dashState);
         }
-        if(_playerStatusWatcher.jumpKeyPressed){    
+        if(jumpKeyPressed){    
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
-        if(_playerStatusWatcher.isMoving){
+        if(horizontalInputReceived){
             playerStateMachine.SwitchState(playerStateMachine.runningState);
+        }
+        if(isInAir){
+            playerStateMachine.SwitchState(playerStateMachine.inAirState);
         }
     }
 }

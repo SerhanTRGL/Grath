@@ -5,11 +5,8 @@ using UnityEngine;
 public class PlayerState_InAir : PlayerState{
     private Player player;
 
-    public PlayerState_InAir(PlayerStatusWatcher playerStatusWatcher) : base(playerStatusWatcher){
-        return;
-    }
-
     public override void EnterState(PlayerStateMachine playerStateMachine){
+        Debug.Log("InAir");
         //Animation logic, move somewhere else
         playerStateMachine.Player.CharacterAnimator.SetBool("isInAir", true);
         //------------------------------------
@@ -31,7 +28,7 @@ public class PlayerState_InAir : PlayerState{
         //------------------------------------
         
         float horizontalInput = Input.GetAxisRaw("Horizontal");
-        if(_playerStatusWatcher.isMoving){
+        if(horizontalInput != 0){
             player.RigidBody.velocity = new Vector2(horizontalInput * player.Speed, player.RigidBody.velocity.y);
         }
         else{
@@ -51,15 +48,20 @@ public class PlayerState_InAir : PlayerState{
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
-        if(_playerStatusWatcher.isStandingOnGround){
+        RaycastHit2D hit = Physics2D.Raycast(player.transform.position, -player.transform.up, 1, LayerMask.GetMask("Ground"));
+        bool isInAir = (hit.collider == null); 
+
+        bool dashKeyPressed = Input.GetKeyDown(KeyCode.LeftShift);
+        bool jumpKeyPressed = Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space);
+        bool hasJumped = playerStateMachine.hasJumped;
+
+        if(!isInAir){
             playerStateMachine.SwitchState(playerStateMachine.idleState);
         }
-        if(_playerStatusWatcher.dashKeyPressed){
+        if(dashKeyPressed){
             playerStateMachine.SwitchState(playerStateMachine.dashState);
         }
-
-        bool isJumpingInAir = _playerStatusWatcher.jumpKeyPressed &&!_playerStatusWatcher.hasJumped;
-        if(isJumpingInAir){
+        if(jumpKeyPressed && !hasJumped){
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
     }

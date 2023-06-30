@@ -4,17 +4,15 @@ using UnityEngine;
 
 public class PlayerState_Running : PlayerState{
     private Player player;
-    public PlayerState_Running(PlayerStatusWatcher playerStatusWatcher) : base(playerStatusWatcher){
-        return;
-    }
 
     public override void EnterState(PlayerStateMachine playerStateMachine){
+        Debug.Log("Running");
         //Animation logic, move somewhere else
         playerStateMachine.Player.CharacterAnimator.SetBool("isRunning", true);
         //------------------------------------
 
         player = playerStateMachine.Player;
-        _playerStatusWatcher.hasJumped = false;
+        playerStateMachine.hasJumped = false;
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){
@@ -35,7 +33,7 @@ public class PlayerState_Running : PlayerState{
         //--------------------------------
 
         float horizontalInput = Input.GetAxisRaw("Horizontal");
-        if(_playerStatusWatcher.isMoving){
+        if(horizontalInput != 0){
             player.RigidBody.velocity = new Vector2(horizontalInput * player.Speed, player.RigidBody.velocity.y);
         }
         else{
@@ -54,16 +52,23 @@ public class PlayerState_Running : PlayerState{
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
-        if (_playerStatusWatcher.isNotMoving){
+        bool isStationary = player.RigidBody.velocity == Vector2.zero;
+        bool dashKeyPressed = Input.GetKeyDown(KeyCode.LeftShift);
+        bool jumpKeyPressed = Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space);
+        
+        RaycastHit2D hit = Physics2D.Raycast(player.transform.position, -player.transform.up, 1, LayerMask.GetMask("Ground"));
+        bool isInAir = (hit.collider == null);
+
+        if (isStationary){
             playerStateMachine.SwitchState(playerStateMachine.idleState);
         }
-        if (_playerStatusWatcher.dashKeyPressed){
+        if (dashKeyPressed){
             playerStateMachine.SwitchState(playerStateMachine.dashState);
         }
-        if (_playerStatusWatcher.jumpKeyPressed){
+        if (jumpKeyPressed){
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
-        if (_playerStatusWatcher.isInAir){
+        if (isInAir){
             playerStateMachine.SwitchState(playerStateMachine.inAirState);
         }
     }

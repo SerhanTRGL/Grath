@@ -1,8 +1,4 @@
 public class PlayerState_Dead : PlayerState{
-    public PlayerState_Dead(PlayerStatusWatcher playerStatusWatcher) : base(playerStatusWatcher){
-        return;
-    }
-
     public override void EnterState(PlayerStateMachine player)
     {
         

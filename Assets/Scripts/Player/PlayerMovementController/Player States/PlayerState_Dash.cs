@@ -5,12 +5,9 @@ using UnityEngine;
 public class PlayerState_Dash : PlayerState{
     private Player player;
     private float _dashTimer;
-    
-    public PlayerState_Dash(PlayerStatusWatcher playerStatusWatcher) : base(playerStatusWatcher){
-        return;
-    }
 
     public override void EnterState(PlayerStateMachine playerStateMachine){
+        Debug.Log("Dash");
         //Animation logic, move somewhere else
         playerStateMachine.Player.CharacterAnimator.SetBool("isDashing", true);
         //------------------------------------
@@ -41,21 +38,27 @@ public class PlayerState_Dash : PlayerState{
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
-        _playerStatusWatcher.isDashDone = _dashTimer >= player.DashDuration;
+        bool isDashDone = _dashTimer >= player.DashDuration;
+        bool isStationary = player.RigidBody.velocity == Vector2.zero;
+        bool jumpKeyPressed = Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space);
+        bool horizontalInputReceived = Input.GetAxisRaw("Horizontal") != 0;
+        
+        RaycastHit2D hit = Physics2D.Raycast(player.transform.position, -player.transform.up, 1, LayerMask.GetMask("Ground"));
+        bool isInAir = (hit.collider == null); 
 
-        if(_playerStatusWatcher.isDashDone){
-            if (_playerStatusWatcher.isInAir){
+        if(isDashDone){
+            if (isInAir){
                 playerStateMachine.SwitchState(playerStateMachine.inAirState);
             }
-            if (_playerStatusWatcher.isStandingOnGround){
+            if (isStationary){
                 playerStateMachine.SwitchState(playerStateMachine.idleState);
             }
-            if (_playerStatusWatcher.isRunning){
+            if (horizontalInputReceived){
                 playerStateMachine.SwitchState(playerStateMachine.runningState);
             }
         }
 
-        if (_playerStatusWatcher.isJumping){//Player jumps during dash and not in air
+        if (jumpKeyPressed && !isInAir){//Player jumps during dash and not in air
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
     }

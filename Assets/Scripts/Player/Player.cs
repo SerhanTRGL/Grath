@@ -25,9 +25,7 @@ public class Player : MonoBehaviour, IDamageable{
     #endregion
 
     private PlayerStateMachine m_playerStateMachine = new PlayerStateMachine();
-    public PlayerStatusWatcher _playerStatusWatcher;
     void Awake() {
-        _playerStatusWatcher = GetComponent<PlayerStatusWatcher>();
         this.RigidBody = GetComponent<Rigidbody2D>();
         this.MovementDustParticleSystem = GetComponentInChildren<ParticleSystem>();
     }
@@ -38,9 +36,7 @@ public class Player : MonoBehaviour, IDamageable{
         this.DashDuration = 0.2f;
         this.DashQuotient = 3;
         this.JumpSpeed = 20f;
-
-        _playerStatusWatcher.hasJumped = false;
-
+        
         m_playerStateMachine.StartStateMachine(this);
     }
 
@@ -50,8 +46,5 @@ public class Player : MonoBehaviour, IDamageable{
 
     private void OnDrawGizmos() {
         Gizmos.DrawRay(this.transform.position, -this.transform.up);
-        Vector3 offset = new Vector3(0, 0.85f, 0);
-        Gizmos.DrawCube(RigidBody.transform.position - offset, new Vector3(1,0.1f,1));
-        Debug.DrawRay(transform.position, -transform.up, Color.green);
     }
 }

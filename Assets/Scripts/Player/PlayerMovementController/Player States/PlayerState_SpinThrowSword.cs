@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerState_SpinThrowSword : PlayerState{
-    public PlayerState_SpinThrowSword(PlayerStatusWatcher playerStatusWatcher) : base(playerStatusWatcher){
-        return;
-    }
-
     public override void EnterState(PlayerStateMachine player){
         
     }
