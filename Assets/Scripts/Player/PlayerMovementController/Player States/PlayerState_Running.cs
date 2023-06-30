@@ -3,84 +3,72 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerState_Running : PlayerState{
-    private Rigidbody2D m_playerRigidBody;
-    private float m_playerSpeed;
-    private float m_horizontalInput;
-    public override void EnterState(PlayerStateMachine playerStateMachine){
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isRunning", true);
-        m_playerRigidBody = playerStateMachine.m_player.PlayerRigidBody;
-        m_playerSpeed = playerStateMachine.m_player.PlayerSpeed;
-        playerStateMachine.m_player.HasJumped = false;
-        Debug.Log("Entered player state: running");
-    }
+    private Player player;
 
-    public override void ExecuteState(PlayerStateMachine playerStateMachine){
+    public override void EnterState(PlayerStateMachine playerStateMachine){
         Debug.Log("Running");
-        HandleStateLogic(playerStateMachine);
-        HandleStateSwitchLogic(playerStateMachine);
+        //Animation logic, move somewhere else
+        playerStateMachine.Player.CharacterAnimator.SetBool("isRunning", true);
+        //------------------------------------
+
+        player = playerStateMachine.Player;
+        playerStateMachine.hasJumped = false;
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isRunning", false);
-        Debug.Log("Exiting player state: running");
+        //Animation logic, move somewhere else
+        player.CharacterAnimator.SetBool("isRunning", false);
+        //------------------------------------
     }
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
-        if(m_playerRigidBody.velocity.y < 0.1f){
-            playerStateMachine.m_player.CharacterAnimator.SetBool("isJumping", false);
+        //Animation logic, move somewhere else
+        if(player.RigidBody.velocity.y < 0.1f){
+            player.CharacterAnimator.SetBool("isJumping", false);
         }
-        playerStateMachine.m_player.MovementDustParticleSystem.Play();
+        //------------------------------------
 
-        m_horizontalInput = Input.GetAxisRaw("Horizontal");
-        
-        if(m_horizontalInput != 0){
-            m_playerRigidBody.velocity = new Vector2(m_horizontalInput * m_playerSpeed, m_playerRigidBody.velocity.y);
+        //Dust effect, move somewhere else
+        player.MovementDustParticleSystem.Play();
+        //--------------------------------
+
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        if(horizontalInput != 0){
+            player.RigidBody.velocity = new Vector2(horizontalInput * player.Speed, player.RigidBody.velocity.y);
         }
-        else{ //slow down
-            m_playerRigidBody.velocity *= new Vector2(0.95f, 1);
+        else{
+            player.RigidBody.velocity *= new Vector2(0.95f, 1);
         }
         
         //Look right
-        if(m_horizontalInput > 0){
-            m_playerRigidBody.transform.rotation = Quaternion.Euler(0, 0, 0);
+        if(horizontalInput > 0){
+            player.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
         //Look left
-        if(m_horizontalInput < 0){
-            m_playerRigidBody.transform.rotation = Quaternion.Euler(0, 180, 0);
+        if(horizontalInput < 0){
+            player.transform.rotation = Quaternion.Euler(0, 180, 0);
         }
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
-        //Player stopped moving
-        if(m_playerRigidBody.velocity == Vector2.zero){
+        bool isStationary = player.RigidBody.velocity == Vector2.zero;
+        bool dashKeyPressed = Input.GetKeyDown(KeyCode.LeftShift);
+        bool jumpKeyPressed = Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space);
+        
+        RaycastHit2D hit = Physics2D.Raycast(player.transform.position, -player.transform.up, 1, LayerMask.GetMask("Ground"));
+        bool isInAir = (hit.collider == null);
+
+        if (isStationary){
             playerStateMachine.SwitchState(playerStateMachine.idleState);
         }
-
-        //Player pressed dash key
-        if(Input.GetKeyDown(KeyCode.LeftShift)){
+        if (dashKeyPressed){
             playerStateMachine.SwitchState(playerStateMachine.dashState);
         }
-        //Player pressed jump keys
-        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)){
+        if (jumpKeyPressed){
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
-
-        //Player falls of a cliff
-        int groundLayerMask = LayerMask.GetMask("Ground");
-        Vector2 direction = -m_playerRigidBody.transform.up;
-        Debug.DrawRay(m_playerRigidBody.transform.position, -m_playerRigidBody.transform.up, Color.green);
-        Vector3 offset = new Vector3(0, 0.85f, 0);
-        RaycastHit2D hit = Physics2D.BoxCast(
-                                            m_playerRigidBody.transform.position-offset,
-                                            new Vector2(1, 0.1f), 
-                                            0,
-                                            -m_playerRigidBody.transform.up,
-                                            1,
-                                            groundLayerMask);
-        bool isInAir = (hit.collider == null);
-        
-        if(isInAir){
+        if (isInAir){
             playerStateMachine.SwitchState(playerStateMachine.inAirState);
         }
     }

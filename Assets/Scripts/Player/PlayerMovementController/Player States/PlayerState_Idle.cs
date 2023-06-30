@@ -3,44 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerState_Idle : PlayerState{
-    public override void EnterState(PlayerStateMachine playerStateMachine){
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isIdle", true);
-        Debug.Log("Entered player state: idle");
-        playerStateMachine.m_player.HasJumped = false;
-    }
+    private Player player;
 
-    public override void ExecuteState(PlayerStateMachine playerStateMachine){
+    public override void EnterState(PlayerStateMachine playerStateMachine){
         Debug.Log("Idle");
-        HandleStateLogic(playerStateMachine);
-        HandleStateSwitchLogic(playerStateMachine);
+        //Animation logic, move somewhere else
+        playerStateMachine.Player.CharacterAnimator.SetBool("isIdle", true);
+        //-----------------------------------
+
+        player = playerStateMachine.Player;
+        playerStateMachine.hasJumped = false;
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){
-        Debug.Log("Exiting player state: idle");
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isIdle", false);
+        //Animation logic, move somewhere else
+        player.CharacterAnimator.SetBool("isIdle", false);
+        //-----------------------------------
     }
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
-        if(playerStateMachine.m_player.PlayerRigidBody.velocity.y < 0.1f){
-            playerStateMachine.m_player.CharacterAnimator.SetBool("isJumping", false);
+        //Animation logic, move somewhere else
+        if(player.RigidBody.velocity.y < 0.1f){
+            player.CharacterAnimator.SetBool("isJumping", false);
         }
+        //-----------------------------------
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
+        bool dashKeyPressed = Input.GetKeyDown(KeyCode.LeftShift);
+        bool jumpKeyPressed = Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space);
+        bool horizontalInputReceived = Input.GetAxisRaw("Horizontal") != 0;
         
-        //Left Mouse Button Pressed
-        //if(Input.GetMouseButton(0)){playerStateMachine.SwitchState(playerStateMachine.attack1State);}
-        //Shift pressed
-        if(Input.GetKeyDown(KeyCode.LeftShift)){ 
+        RaycastHit2D hit = Physics2D.Raycast(player.transform.position, -player.transform.up, 1, LayerMask.GetMask("Ground"));
+        bool isInAir = (hit.collider == null); 
+        
+        if(dashKeyPressed){ 
             playerStateMachine.SwitchState(playerStateMachine.dashState);
         }
-        //Space pressed
-        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)){    
+        if(jumpKeyPressed){    
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
-        //A or D pressed
-        if(Input.GetAxisRaw("Horizontal") != 0){
+        if(horizontalInputReceived){
             playerStateMachine.SwitchState(playerStateMachine.runningState);
+        }
+        if(isInAir){
+            playerStateMachine.SwitchState(playerStateMachine.inAirState);
         }
     }
 }

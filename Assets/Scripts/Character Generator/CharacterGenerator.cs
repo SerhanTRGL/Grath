@@ -16,7 +16,7 @@ public class CharacterGenerator : MonoBehaviour{
             m_characterVisualGenerator.GeneratePlayerVisual();
             fullName = m_characterNameGenerator.GenerateNewCharacterName();
             Debug.Log(fullName + " Number of names generated: " + m_characterNameGenerator.GeneratedNameCount);
-            player.PlayerName = fullName;
+            player.CharacterName = fullName;
         }
     }
 }

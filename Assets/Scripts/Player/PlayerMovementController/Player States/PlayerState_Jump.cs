@@ -3,37 +3,61 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerState_Jump : PlayerState{
-    private Rigidbody2D m_playerRigidBody;
-    private float m_playerJumpSpeed;
+    private Player player;
+
     public override void EnterState(PlayerStateMachine playerStateMachine){
-        playerStateMachine.m_player.CharacterAnimator.SetBool("isJumping", true);
-
-        m_playerRigidBody = playerStateMachine.m_player.PlayerRigidBody;
-        m_playerJumpSpeed = playerStateMachine.m_player.PlayerJumpSpeed;
-        m_playerRigidBody.velocity = new Vector2(m_playerRigidBody.velocity.x, m_playerJumpSpeed);
-        playerStateMachine.m_player.HasJumped = true;
-        playerStateMachine.m_player.MovementDustParticleSystem.Play();
-        Debug.Log("Entered player state: jump");
-    }
-
-    public override void ExecuteState(PlayerStateMachine playerStateMachine){
         Debug.Log("Jump");
-        HandleStateLogic(playerStateMachine);
-        HandleStateSwitchLogic(playerStateMachine);
+        player = playerStateMachine.Player;
+        //Animation logic, move somewhere else
+        player.CharacterAnimator.SetBool("isJumping", true);
+        //------------------------------------
+        
+        //Dust effect, move somewhere else
+        player.MovementDustParticleSystem.Play();
+        //--------------------------------
+
+        
+        player.RigidBody.velocity = new Vector2(player.RigidBody.velocity.x, player.JumpSpeed);
+        playerStateMachine.hasJumped = true;
+
     }
 
     public override void ExitState(PlayerStateMachine playerStateMachine){
-        if(m_playerRigidBody.velocity.y < 0.1f){
-            playerStateMachine.m_player.CharacterAnimator.SetBool("isJumping", false);
+        //Animation logic, move somewhere else
+        if(player.RigidBody.velocity.y < 0.1f){
+            playerStateMachine.Player.CharacterAnimator.SetBool("isJumping", false);
         }
-        Debug.Log("Exit player state: jump");
+        //------------------------------------
     }
 
     protected override void HandleStateLogic(PlayerStateMachine playerStateMachine){
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        if(horizontalInput != 0){
+            player.RigidBody.velocity = new Vector2(horizontalInput * player.Speed, player.RigidBody.velocity.y);
+        }
+        else{
+            player.RigidBody.velocity *= new Vector2(0.95f, 1);
+        }
         
+        //Look right
+        if(horizontalInput > 0){
+            player.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+
+        //Look left
+        if(horizontalInput < 0){
+            player.transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
-        playerStateMachine.SwitchState(playerStateMachine.inAirState);
+        if(player.RigidBody.velocity.y < 0.01f){
+            playerStateMachine.SwitchState(playerStateMachine.inAirState);
+        }
+        
+        bool dashKeyPressed = Input.GetKeyDown(KeyCode.LeftShift);
+        if(dashKeyPressed){
+            playerStateMachine.SwitchState(playerStateMachine.dashState);
+        }
     }
 }

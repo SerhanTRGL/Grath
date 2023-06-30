@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 public class PlayerStateMachine{
-
     #region State Declarations
     public PlayerState currentState;
     public PlayerState_Dash dashState = new PlayerState_Dash();
@@ -15,11 +11,12 @@ public class PlayerStateMachine{
     public PlayerState_SpinThrowSword spinThrowSwordState = new PlayerState_SpinThrowSword();
     #endregion
     
-    public Player m_player;
+    public Player Player;
+    public bool hasJumped;
+
     public void StartStateMachine(Player player){
-        Debug.Log("Player state machine started!");
-        m_player = player;
-        currentState = idleState;
+        this.Player = player;
+        this.currentState = idleState;
         currentState.EnterState(this);
     }
 
@@ -27,10 +24,10 @@ public class PlayerStateMachine{
         currentState.ExecuteState(this);
     }
 
-    public void SwitchState(PlayerState state){
+    public void SwitchState(PlayerState newState){
         currentState.ExitState(this);
-        currentState = state;
-        state.EnterState(this);
+        currentState = newState;
+        newState.EnterState(this);
     }
 
 }
