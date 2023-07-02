@@ -5,6 +5,10 @@ using UnityEngine;
 public class SwordState_Attack2 : SwordState{
     private ComboManager m_comboManager;
     public override void EnterState(SwordStateMachine swordStateMachine){
+        swordStateMachine.m_sword.transform.parent = swordStateMachine.m_sword.Holder.SwordHoldPoint;
+        swordStateMachine.m_sword.transform.localPosition = Vector3.zero;
+        swordStateMachine.m_sword.transform.localRotation = Quaternion.Euler(0,0,0);
+        swordStateMachine.m_sword.transform.localScale = Vector3.one;
         swordStateMachine.m_sword.PlayerAnimator.SetTrigger("SecondAttack");
         m_comboManager = swordStateMachine.m_sword.ComboManager;
         m_comboManager.ComboTimer = m_comboManager.ComboDuration;

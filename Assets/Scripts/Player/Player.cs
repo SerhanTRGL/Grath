@@ -4,14 +4,7 @@ using UnityEngine;
 
 //TODO: Fall stunned state add
 //FIXME: Animations 
-public class Player : MonoBehaviour, IDamageable{
-    #region IDamageable Related
-    [field: SerializeField] public int Health { get; set; }    
-    public void TakeDamage(int damage){
-        this.Health = damage > this.Health ? 0 : this.Health-damage;
-    }
-    #endregion
-    
+public partial class Player : MonoBehaviour{
     public string CharacterName;
     public float Speed;
     public float DashDuration;
@@ -20,10 +13,8 @@ public class Player : MonoBehaviour, IDamageable{
     
     #region References
     public Animator CharacterAnimator;
-    public Transform SwordMountPoint;
     public Rigidbody2D RigidBody;
     public ParticleSystem MovementDustParticleSystem;
-    public Sword PlayerSword = null;
     #endregion
 
     private PlayerStateMachine m_playerStateMachine = new PlayerStateMachine();
@@ -48,5 +39,36 @@ public class Player : MonoBehaviour, IDamageable{
 
     private void OnDrawGizmos() {
         Gizmos.DrawRay(this.transform.position, -this.transform.up);
+    }
+}
+
+
+public partial class Player: IDamageable{
+    [field: SerializeField] public int Health { get; set; }    
+    public void TakeDamage(int damage){
+        this.Health = damage > this.Health ? 0 : this.Health-damage;
+    }
+}
+
+public partial class Player : ISwordHolder{
+    public Transform SwordBackPoint;
+    public Transform SwordHoldPoint;
+    public Sword Sword{
+        get;
+        set;
+    }
+
+    public void AcquireSword(Sword swordToAcquire){
+        if(Sword == null){
+            swordToAcquire.transform.parent = SwordBackPoint.transform;
+            swordToAcquire.transform.localPosition = Vector3.zero;
+            swordToAcquire.transform.localRotation = Quaternion.Euler(0,0,0);
+            swordToAcquire.transform.localScale = Vector3.one;
+        }
+    }
+
+    public void DropSword()
+    {
+        throw new System.NotImplementedException();
     }
 }
