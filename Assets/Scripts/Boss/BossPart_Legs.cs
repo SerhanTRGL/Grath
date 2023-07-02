@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossPart_Legs : MonoBehaviour
-{
+public partial class  BossPart_Legs : MonoBehaviour{
+    
     // Start is called before the first frame update
-    void Start()
-    {
+    private void Awake() {
+        Health = 100;
+        MaxHealth = Health;
+    }
+    void Start(){
         
     }
 
@@ -15,4 +18,22 @@ public class BossPart_Legs : MonoBehaviour
     {
         
     }
+}
+
+public partial class BossPart_Legs : IDamageable{
+    private int MaxHealth;
+    public float HealthNormalized{
+        get{
+            return Health/MaxHealth;
+        }
+    }
+    public int Health { 
+        get;  
+        set;
+    }
+
+    public void TakeDamage(int damage){
+        this.Health = damage >= Health ? 0 : Health-damage;
+    }
+
 }
