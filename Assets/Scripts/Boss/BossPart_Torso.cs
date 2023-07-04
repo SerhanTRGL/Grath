@@ -34,3 +34,28 @@ public partial class BossPart_Torso : IDamageable{
         this.Health = damage >= Health ? 0 : Health-damage;
     }
 }
+
+public partial class BossPart_Torso : IBossAttack
+{
+    public Transform AttackTarget { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+
+    public IEnumerator Attack_State1()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public IEnumerator Attack_State2()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public IEnumerator Attack_State3()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public IEnumerator Attack_State4()
+    {
+        throw new System.NotImplementedException();
+    }
+}

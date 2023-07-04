@@ -2,16 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BossPart_Head))]
-[RequireComponent(typeof(BossPart_Torso))]
-[RequireComponent(typeof(BossPart_Arms))]
-[RequireComponent(typeof(BossPart_Legs))]
 public class Boss : MonoBehaviour{
     
     public BossPart_Head BossHead;
     public BossPart_Torso BossTorso;
     public BossPart_Arms BossArms;
-    public BossPart_Legs BossLegs;
     
     private int MaxHealth;
     public float HealthNormalized{
@@ -21,15 +16,14 @@ public class Boss : MonoBehaviour{
     }
     public int Health{
         get{
-            return BossHead.Health + BossTorso.Health + BossArms.Health + BossLegs.Health;
+            return BossHead.Health + BossTorso.Health + BossArms.Health;
         }
     }
     
     void Start(){
         BossHead = GetComponent<BossPart_Head>();
         BossTorso = GetComponent<BossPart_Torso>();
-        BossArms = GetComponent<BossPart_Arms>();
-        BossLegs = GetComponent<BossPart_Legs>();
+        BossArms = GetComponent<BossPart_Arms>();   
         MaxHealth = Health;
         Debug.Log(Health.ToString());
         Debug.Log(HealthNormalized.ToString());
