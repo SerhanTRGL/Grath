@@ -319,7 +319,6 @@ GameObject:
   - component: {fileID: 125118731093696709}
   - component: {fileID: 3333389167660753773}
   - component: {fileID: 4894337528178463018}
-  - component: {fileID: 835849758018654393}
   - component: {fileID: 3398054082415967821}
   m_Layer: 0
   m_Name: Boss
@@ -380,19 +379,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BossHead: {fileID: 0}
   BossTorso: {fileID: 0}
-  BossArms: {fileID: 0}
---- !u!114 &835849758018654393
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1257800647711733926}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a5ed064c24663443a9ddb73c4e5d586, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  BossArms: {fileID: 1174967763779274831}
 --- !u!114 &3398054082415967821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -948,6 +935,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de1d513b7c1396b4c85a75cde58d1275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxHealth: 0
   armSwitchPoint: {fileID: 8532917533379720955}
   attackTarget: {fileID: 0}
   leftHandTarget: {fileID: 6601545190052729059}

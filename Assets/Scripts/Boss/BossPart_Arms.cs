@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public partial class BossPart_Arms : MonoBehaviour{
-    
-
-    // Start is called before the first frame update
     private void Awake() {
-        Health = 100;
-        MaxHealth = Health;
+        Health = MaxHealth;
     }
     // Update is called once per frame
     void Update(){
@@ -28,7 +24,7 @@ public partial class BossPart_Arms : MonoBehaviour{
 }
 
 public partial class BossPart_Arms : IDamageable{
-    private int MaxHealth;
+    public int MaxHealth;
     public float HealthNormalized{
         get{
             return Health/MaxHealth;
