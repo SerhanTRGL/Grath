@@ -15,14 +15,7 @@ public class SwordStateMachine{
     public Sword m_sword;
     
     public void StartStateMachine(Sword sword){
-        if(sword.IsOnGround){
-            currentState = onGroundState;
-        }
-        
-        if(sword.IsOwnedByPlayer){
-            currentState = onPlayerState;
-        }
-
+        currentState = onGroundState;
         m_sword = sword;
         currentState.EnterState(this);
     }
