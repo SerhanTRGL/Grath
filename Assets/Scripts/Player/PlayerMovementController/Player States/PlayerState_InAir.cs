@@ -48,7 +48,8 @@ public class PlayerState_InAir : PlayerState{
     }
 
     protected override void HandleStateSwitchLogic(PlayerStateMachine playerStateMachine){
-        RaycastHit2D hit = Physics2D.Raycast(player.transform.position, -player.transform.up, 1, LayerMask.GetMask("Ground"));
+        RaycastHit2D hit = Physics2D.Linecast(player.transform.position, player.transform.position - new Vector3(0, 1.1f, 0), LayerMask.GetMask("Ground"));
+        Debug.DrawLine(player.transform.position, player.transform.position - new Vector3(0, 1.1f, 0), Color.blue, 0.01f);
         bool isInAir = (hit.collider == null); 
 
         bool dashKeyPressed = Input.GetKeyDown(KeyCode.LeftShift);

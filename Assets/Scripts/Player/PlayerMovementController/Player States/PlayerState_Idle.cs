@@ -34,7 +34,8 @@ public class PlayerState_Idle : PlayerState{
         bool jumpKeyPressed = Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space);
         bool horizontalInputReceived = Input.GetAxisRaw("Horizontal") != 0;
         
-        RaycastHit2D hit = Physics2D.Raycast(player.transform.position, -player.transform.up, 1, LayerMask.GetMask("Ground"));
+        RaycastHit2D hit = Physics2D.Linecast(player.transform.position, player.transform.position - new Vector3(0, 1.1f, 0), LayerMask.GetMask("Ground"));
+        Debug.DrawLine(player.transform.position, player.transform.position - new Vector3(0, 1.1f, 0), Color.blue, 0.01f);
         bool isInAir = (hit.collider == null); 
         
         if(dashKeyPressed){ 

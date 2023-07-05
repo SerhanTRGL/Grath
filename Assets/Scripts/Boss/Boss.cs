@@ -20,10 +20,7 @@ public class Boss : MonoBehaviour{
         }
     }
     
-    void Start(){
-        BossHead = GetComponent<BossPart_Head>();
-        BossTorso = GetComponent<BossPart_Torso>();
-        BossArms = GetComponent<BossPart_Arms>();   
+    void Start(){ 
         MaxHealth = Health;
         Debug.Log(Health.ToString());
         Debug.Log(HealthNormalized.ToString());
