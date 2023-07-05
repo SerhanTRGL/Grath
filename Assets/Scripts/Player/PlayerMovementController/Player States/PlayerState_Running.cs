@@ -56,8 +56,9 @@ public class PlayerState_Running : PlayerState{
         bool dashKeyPressed = Input.GetKeyDown(KeyCode.LeftShift);
         bool jumpKeyPressed = Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space);
         
-        RaycastHit2D hit = Physics2D.Raycast(player.transform.position, -player.transform.up, 1, LayerMask.GetMask("Ground"));
-        bool isInAir = (hit.collider == null);
+        RaycastHit2D hit = Physics2D.Linecast(player.transform.position, player.transform.position - new Vector3(0, 1.1f, 0), LayerMask.GetMask("Ground"));
+        Debug.DrawLine(player.transform.position, player.transform.position - new Vector3(0, 1.1f, 0), Color.blue, 0.01f);
+        bool isInAir = (hit.collider == null); 
 
         if (isStationary){
             playerStateMachine.SwitchState(playerStateMachine.idleState);

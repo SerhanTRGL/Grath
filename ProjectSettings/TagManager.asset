@@ -43,3 +43,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: LineRenderer
+    uniqueID: 3573587695
+    locked: 0

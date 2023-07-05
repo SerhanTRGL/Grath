@@ -42,8 +42,9 @@ public partial class BossPart_Arms : IDamageable{
 
 public partial class BossPart_Arms : IBossAttack{   
     public Transform AttackTarget { get => attackTarget; set => attackTarget = value; }
-    public Transform armSwitchPoint;
     public Transform attackTarget;
+    public Transform armSwitchPoint;
+    
     public Transform leftHandTarget;
     public Transform rightHandTarget;
 
