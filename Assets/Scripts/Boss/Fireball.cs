@@ -30,7 +30,7 @@ public class Fireball : MonoBehaviour{
             aliveTimer = 0;
             StartCoroutine(WaitOnGround());
         }
-        if(!this.sticksToGround){
+        if(!this.sticksToGround && other.tag == "ground" || other.tag == "Player"){
             Destroy(this.gameObject);
         }
     }
