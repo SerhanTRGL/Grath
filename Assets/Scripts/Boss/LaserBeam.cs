@@ -7,7 +7,8 @@ public class LaserBeam : MonoBehaviour{
     public GameObject closestGround;
     public EdgeCollider2D edgeCollider;
     public LineRenderer laserBeamLineRenderer;
-    private List<GameObject> collidingGrounds;
+    private List<GameObject> collidingGrounds; 
+    public int damage;
 
     private void Awake() {
         collidingGrounds = new List<GameObject>();
@@ -26,8 +27,16 @@ public class LaserBeam : MonoBehaviour{
             collidingGrounds.Add(other.gameObject);
             closestGround = CalculateClosestGround();
         }
+        if(other.tag == "Player"){
+            other.GetComponent<IDamageable>().TakeDamage(damage);
+        }
     }
 
+    private void OnTriggerStay2D(Collider2D other) {
+        if(other.tag == "Player"){
+            other.GetComponent<IDamageable>().TakeDamage(damage);
+        }
+    }
     private void OnTriggerExit2D(Collider2D other) {
         if(collidingGrounds.Contains(other.gameObject)){
             collidingGrounds.Remove(other.gameObject);

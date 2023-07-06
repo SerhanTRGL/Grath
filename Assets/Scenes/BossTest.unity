@@ -487,37 +487,6 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!1 &1259293108
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1259293109}
-  m_Layer: 0
-  m_Name: Firepoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1259293109
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1259293108}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.24, y: -16.91, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1649090682}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1389202443
 GameObject:
   m_ObjectHideFlags: 0
@@ -784,11 +753,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1649090682 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3648673428635181735, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
-  m_PrefabInstance: {fileID: 1732617763}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1732617763
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -796,6 +760,42 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 102617412, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
+      propertyPath: m_Name
+      value: Right_LaserBeam 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 569340784, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
+      propertyPath: m_Name
+      value: Right_LaserBeam 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 710652846, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
+      propertyPath: m_Name
+      value: Left_LaserBeam 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 845006790, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
+      propertyPath: m_Name
+      value: Left_LaserBeam 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1109712223, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
+      propertyPath: m_Name
+      value: Right_LaserBeam 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1173144800, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
+      propertyPath: m_Name
+      value: Left_LaserBeam 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1250792759, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
+      propertyPath: m_Name
+      value: Right_LaserBeam 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1459037794, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
+      propertyPath: m_Name
+      value: Left_LaserBeam 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1895113062, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
+      propertyPath: m_Name
+      value: Left_LaserBeam 9
+      objectReference: {fileID: 0}
     - target: {fileID: 125118731093696709, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -849,21 +849,9 @@ PrefabInstance:
       value: Boss
       objectReference: {fileID: 0}
     - target: {fileID: 2759981535305470007, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
-      propertyPath: MaxHealth
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 2759981535305470007, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
-      propertyPath: firePoint
-      value: 
-      objectReference: {fileID: 1259293109}
-    - target: {fileID: 2759981535305470007, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
       propertyPath: attackTarget
       value: 
       objectReference: {fileID: 518278020}
-    - target: {fileID: 2759981535305470007, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
-      propertyPath: fireballPrefab
-      value: 
-      objectReference: {fileID: 8860725977310459296, guid: c1b759b6da3b2fb4cbc2ed64e5e9cf41, type: 3}
     - target: {fileID: 3192774398095789776, guid: 6c21803f333cebc4ca8532f0eddf00aa, type: 3}
       propertyPath: attackTarget
       value: 
