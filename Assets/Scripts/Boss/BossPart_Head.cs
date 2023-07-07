@@ -9,9 +9,7 @@ public partial class BossPart_Head : MonoBehaviour{
     }
     // Update is called once per frame
     void Update(){
-        if(Input.GetKeyDown(KeyCode.Alpha0)){
-            StartCoroutine(Attack_State4());
-        }
+        
     }
 }
 
@@ -34,9 +32,6 @@ public partial class BossPart_Head : IDamageable{
 }
 
 public partial class BossPart_Head : IBossAttack{
-    
-    public Transform AttackTarget { get => attackTarget; set => attackTarget = value; }
-    
     [Header("General")]
     public Transform attackTarget;
     public GameObject fireballPrefab;
