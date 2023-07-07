@@ -13,7 +13,7 @@ public partial class BossPart_Torso : MonoBehaviour{
     // Update is called once per frame
     void Update(){
         if(Input.GetKeyDown(KeyCode.Alpha0)){
-            StartCoroutine(Attack_State3());
+            StartCoroutine(Attack_State4());
         }
     }
 }
@@ -36,9 +36,7 @@ public partial class BossPart_Torso : IDamageable{
     }
 }
 
-public partial class BossPart_Torso : IBossAttack{  
-    public Transform AttackTarget { get => attackTarget; set => attackTarget = value; }
-    
+public partial class BossPart_Torso : IBossAttack{      
     [Header("General")]
     public Transform attackTarget;
     public GameObject fireballPrefab;
@@ -157,8 +155,84 @@ public partial class BossPart_Torso : IBossAttack{
         }
     }
 
-    public IEnumerator Attack_State4()
-    {
-        throw new System.NotImplementedException();
+    [Header("State 4")]
+    public GameObject laserBeamWithEnergyBallPrefab;
+    public int numberOfObjectsToSpawn;
+    public float distanceFromEdges;
+    public float energyBallGrowTime;
+    public float energyBallAttackDuration;
+    public float energyBallLaserWaitDuration;
+    public float laserLength = 10;
+    public IEnumerator Attack_State4(){
+        List<GameObject> objects = new List<GameObject>();
+        List<Vector3> attackDirections = new List<Vector3>();
+
+        for(int i = 0; i < numberOfObjectsToSpawn; i++){
+            objects.Add(Instantiate(laserBeamWithEnergyBallPrefab));
+            objects[i].transform.position = GetRandomSpawnPosition();
+            objects[i].GetComponentInChildren<LaserBeam>().laserBeamLineRenderer.SetPosition(0, objects[i].transform.position);
+            objects[i].GetComponentInChildren<LaserBeam>().laserBeamLineRenderer.SetPosition(1, objects[i].transform.position);
+
+            objects[i].GetComponentInChildren<EdgeCollider2D>().offset = -objects[i].GetComponentInChildren<LaserBeam>().laserBeamLineRenderer.GetPosition(0);
+            //Attack direction for each energy ball
+            attackDirections.Add(attackTarget.position - objects[i].transform.position);
+        }
+
+        //Start growing the objects
+        float energyBallGrowTimer = 0;
+        while(energyBallGrowTimer <= energyBallGrowTime){
+            foreach(GameObject g in objects){
+                g.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, energyBallGrowTimer/energyBallGrowTime);
+            }
+            energyBallGrowTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        //Make sure the objects have a size of 1 at the end
+        foreach(GameObject g in objects){
+            g.transform.localScale = Vector3.one;
+        }
+        yield return null;
+
+        //Make all energy balls attack
+        float energyBallAttackTimer = 0;
+        while(energyBallAttackTimer < energyBallAttackDuration){
+            for(int i = 0; i < objects.Count; i++){
+                LaserBeam laserBeam = objects[i].GetComponentInChildren<LaserBeam>();
+                Vector3 movePosition = attackDirections[i] * laserLength;
+                Vector3 newPosition = Vector3.Lerp(laserBeam.laserBeamLineRenderer.GetPosition(1), movePosition, energyBallAttackTimer/energyBallAttackDuration);
+                laserBeam.laserBeamLineRenderer.SetPosition(1, newPosition);
+                laserBeam.SetEdgeCollider();
+            }
+            energyBallAttackTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(energyBallLaserWaitDuration);
+        foreach(GameObject g in objects){
+            Destroy(g);
+        }
+        objects.Clear();
+        attackDirections.Clear();
+
+    }
+    
+    private Vector3 GetRandomSpawnPosition(){
+        float cameraHeight = Camera.main.orthographicSize;
+        float cameraWidth = Camera.main.aspect * cameraHeight;
+
+        //Calculate adjusted bounds;
+        float adjustedCameraHeight = cameraHeight - distanceFromEdges;
+        float adjustedCameraWidth = cameraWidth - distanceFromEdges;
+
+        float randomX = Random.Range(-adjustedCameraWidth, adjustedCameraWidth);
+        float randomY = Random.Range(-adjustedCameraHeight, adjustedCameraHeight);
+
+        Vector3 spawnPosition = Camera.main.ViewportToWorldPoint(new Vector3(
+            (randomX + adjustedCameraWidth) / (2f * adjustedCameraWidth),
+            (randomY + adjustedCameraHeight) / (2f * adjustedCameraHeight),
+            Camera.main.nearClipPlane));
+        spawnPosition.z = 0;
+        return spawnPosition;
     }
 }

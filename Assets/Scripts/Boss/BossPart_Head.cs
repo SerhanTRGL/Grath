@@ -32,9 +32,6 @@ public partial class BossPart_Head : IDamageable{
 }
 
 public partial class BossPart_Head : IBossAttack{
-    
-    public Transform AttackTarget { get => attackTarget; set => attackTarget = value; }
-    
     [Header("General")]
     public Transform attackTarget;
     public GameObject fireballPrefab;
