@@ -7,6 +7,7 @@ public class Sword : MonoBehaviour{
     public ComboManager ComboManager{get; private set;}
     public Animator PlayerAnimator;
     public Player Holder;
+    public int damage;
     private void Awake() {
         this.ComboManager = GetComponent<ComboManager>();
     }

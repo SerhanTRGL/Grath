@@ -5,14 +5,15 @@ using UnityEngine;
 public class SwordState_Attack1 : SwordState{
     private ComboManager m_comboManager;
     public override void EnterState(SwordStateMachine swordStateMachine){
-        swordStateMachine.m_sword.transform.parent = swordStateMachine.m_sword.Holder.SwordHoldPoint;
-        swordStateMachine.m_sword.transform.localPosition = Vector3.zero;
-        swordStateMachine.m_sword.transform.localRotation = Quaternion.Euler(0,0,0);
-        swordStateMachine.m_sword.transform.localScale = Vector3.one;
         swordStateMachine.m_sword.PlayerAnimator.SetBool("isOnPlayerBack", true);
         swordStateMachine.m_sword.PlayerAnimator.SetTrigger("FirstAttack");
         m_comboManager = swordStateMachine.m_sword.ComboManager;
         m_comboManager.ComboTimer = m_comboManager.ComboDuration;
+
+        RaycastHit2D hit = Physics2D.Raycast(swordStateMachine.m_sword.Holder.transform.position + new Vector3(0,1), swordStateMachine.m_sword.Holder.transform.right, 2);
+        if(hit.collider != null && hit.collider.tag == "BossPart"){
+            hit.collider.GetComponent<BodyPartReference>().AssociatedBodyPart.GetComponent<IDamageable>().TakeDamage(swordStateMachine.m_sword.damage);
+        }
     }
 
     public override void ExitState(SwordStateMachine swordStateMachine){
@@ -21,6 +22,7 @@ public class SwordState_Attack1 : SwordState{
 
     protected override void HandleStateLogic(SwordStateMachine swordStateMachine){
         swordStateMachine.m_sword.PlayerAnimator.SetFloat("ComboTimer", m_comboManager.ComboTimer);
+        Debug.DrawRay(swordStateMachine.m_sword.Holder.transform.position + new Vector3(0,1), swordStateMachine.m_sword.Holder.transform.right, Color.red);
     }
 
     protected override void HandleStateSwitchLogic(SwordStateMachine swordStateMachine){

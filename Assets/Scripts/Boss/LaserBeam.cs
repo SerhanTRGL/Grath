@@ -28,13 +28,13 @@ public class LaserBeam : MonoBehaviour{
             closestGround = CalculateClosestGround();
         }
         if(other.tag == "Player"){
-            other.GetComponent<IDamageable>().TakeDamage(damage);
+            other.GetComponentInParent<IDamageable>().TakeDamage(damage);
         }
     }
 
     private void OnTriggerStay2D(Collider2D other) {
         if(other.tag == "Player"){
-            other.GetComponent<IDamageable>().TakeDamage(damage);
+            other.GetComponentInParent<IDamageable>().TakeDamage(damage);
         }
     }
     private void OnTriggerExit2D(Collider2D other) {

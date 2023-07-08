@@ -65,5 +65,8 @@ public class PlayerState_InAir : PlayerState{
         if(jumpKeyPressed && !hasJumped){
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
+        if(player.Health == 0){
+            playerStateMachine.SwitchState(playerStateMachine.deadState);
+        }
     }
 }

@@ -50,5 +50,8 @@ public class PlayerState_Idle : PlayerState{
         if(isInAir){
             playerStateMachine.SwitchState(playerStateMachine.inAirState);
         }
+        if(player.Health == 0){
+            playerStateMachine.SwitchState(playerStateMachine.deadState);
+        }
     }
 }

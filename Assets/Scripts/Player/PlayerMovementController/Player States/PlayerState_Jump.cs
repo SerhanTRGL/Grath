@@ -59,5 +59,8 @@ public class PlayerState_Jump : PlayerState{
         if(dashKeyPressed){
             playerStateMachine.SwitchState(playerStateMachine.dashState);
         }
+        if(player.Health == 0){
+            playerStateMachine.SwitchState(playerStateMachine.deadState);
+        }
     }
 }

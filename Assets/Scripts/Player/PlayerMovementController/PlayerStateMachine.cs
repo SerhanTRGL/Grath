@@ -8,7 +8,6 @@ public class PlayerStateMachine{
     public PlayerState_InAir inAirState = new PlayerState_InAir();
     public PlayerState_Jump jumpState = new PlayerState_Jump();
     public PlayerState_Running runningState = new PlayerState_Running();
-    public PlayerState_SpinThrowSword spinThrowSwordState = new PlayerState_SpinThrowSword();
     #endregion
     
     public Player Player;

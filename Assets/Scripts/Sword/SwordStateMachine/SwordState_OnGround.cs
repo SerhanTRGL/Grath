@@ -17,7 +17,9 @@ public class SwordState_OnGround : SwordState{
                                             origin: swordStateMachine.m_sword.transform.position,
                                             size: new Vector2(5, 5),
                                             angle: 0,
-                                            direction: Vector2.zero
+                                            direction: Vector2.zero,
+                                            5,
+                                            LayerMask.GetMask("PlayerTrigger")
                                             );
 
         if(hit.collider != null && hit.collider.tag == "Player"){
@@ -34,12 +36,14 @@ public class SwordState_OnGround : SwordState{
                                             origin: swordStateMachine.m_sword.transform.position,
                                             size: new Vector2(5, 5),
                                             angle: 0,
-                                            direction: Vector2.zero
+                                            direction: Vector2.zero,
+                                            5,
+                                            LayerMask.GetMask("PlayerTrigger")
                                             );
         if(hit.collider != null && hit.collider.tag == "Player" && Input.GetKeyDown(KeyCode.E)){
-            hit.collider.GetComponent<Player>().AcquireSword(swordStateMachine.m_sword);
-            swordStateMachine.m_sword.PlayerAnimator = hit.collider.GetComponentInChildren<Animator>();
-            swordStateMachine.m_sword.Holder = hit.collider.GetComponent<Player>();
+            hit.collider.GetComponentInParent<Player>().AcquireSword(swordStateMachine.m_sword);
+            swordStateMachine.m_sword.transform.localScale = new Vector3(0.5f, 0.5f, 1);
+            swordStateMachine.m_sword.Holder = hit.collider.GetComponentInParent<Player>();
             swordStateMachine.SwitchState(swordStateMachine.onPlayerState);
         }
     }

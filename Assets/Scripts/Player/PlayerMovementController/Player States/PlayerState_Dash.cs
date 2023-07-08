@@ -62,5 +62,9 @@ public class PlayerState_Dash : PlayerState{
         if (jumpKeyPressed && !isInAir){//Player jumps during dash and not in air
             playerStateMachine.SwitchState(playerStateMachine.jumpState);
         }
+
+        if(player.Health == 0){
+            playerStateMachine.SwitchState(playerStateMachine.deadState);
+        }
     }
 }

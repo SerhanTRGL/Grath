@@ -7,7 +7,7 @@ public class BurningHead : MonoBehaviour{
     public int damage;
     private void OnTriggerStay2D(Collider2D other) {
         if(other.tag == "Player" && this.headBurning){
-            other.gameObject.GetComponent<IDamageable>().TakeDamage(damage);
+            other.gameObject.GetComponentInParent<IDamageable>().TakeDamage(damage);
         }
     }
 }

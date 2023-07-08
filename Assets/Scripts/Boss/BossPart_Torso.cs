@@ -1,19 +1,89 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 
 public partial class BossPart_Torso : MonoBehaviour{
-    // Start is called before the first frame update
+
+    public static event Action OnBossTorsoHealthChanged;
     private void Awake() {
         Health = MaxHealth;
-    }
-    void Start(){
+        OnBossTorsoHealthChanged += BossTorso_OnHealthChanged;
+        InvincibilityDuration = 0.1f;
     }
 
-    // Update is called once per frame
+    private void Start() {
+        //Force increase state of the part depending on boss health
+        Boss.OnBossHealthBelow75Perc += Boss_OnBossHealthBelow75Perc;
+        Boss.OnBossHealthBelow50Perc += Boss_OnBossHealthBelow50Perc;
+        Boss.OnBossHealthBelow25Perc += Boss_OnBossHealthBelow25Perc;
+    }
+
+    public SpriteResolver torsoSpriteResolver;
+    private void UpdateSprites(int bodyPartState){
+        torsoSpriteResolver.SetCategoryAndLabel("Torso", bodyPartState.ToString());
+    }
+
+
+    private void Boss_OnBossHealthBelow25Perc(){
+        if(BodyPartState < 4){
+            BodyPartState = 4;
+        }
+        UpdateSprites(BodyPartState);
+    }
+
+    
+    private void Boss_OnBossHealthBelow50Perc(){
+        if(BodyPartState < 3){
+            BodyPartState = 3;
+        }
+        UpdateSprites(BodyPartState);
+    }
+
+    private void Boss_OnBossHealthBelow75Perc()
+    {
+        if(BodyPartState < 2){
+            BodyPartState = 2;
+        }
+        UpdateSprites(BodyPartState);
+    }
+
+    private void BossTorso_OnHealthChanged(){
+        if(HealthNormalized < 0.25f){
+            BodyPartState = 4;
+        }
+        else if(HealthNormalized < 0.50f){
+            BodyPartState = 3;
+        }
+        else if(HealthNormalized < 0.75){
+            BodyPartState = 2;
+        }
+        UpdateSprites(BodyPartState);
+    }
+
+    public int BodyPartState = 1;
+    public bool IsThisPartAttacking = false;
     void Update(){
-        if(Input.GetKeyDown(KeyCode.Alpha0)){
-            StartCoroutine(Attack_State4());
+        Debug.Log("Boss Torso State:" + BodyPartState.ToString());
+        Debug.Log("Boss Torso Health Normalized: " + HealthNormalized.ToString());
+        if(Boss.PlayerIsInBossArea){
+            bool bossHasFreeAttacks = Boss.NumberOfCurrentlyHappeningAttacks < Boss.MaximumConcurrentAttacks;
+            if(!IsThisPartAttacking && bossHasFreeAttacks){
+                int attackToUse = UnityEngine.Random.Range(1, BodyPartState+1); //+1 Because max is exclusive
+                if(attackToUse == 1){
+                    StartCoroutine(Attack_State1());
+                }
+                if(attackToUse == 2){
+                    StartCoroutine(Attack_State2());
+                }
+                if(attackToUse == 3){
+                    StartCoroutine(Attack_State3());
+                }
+                if(attackToUse == 4){
+                    StartCoroutine(Attack_State4());
+                }
+            }
         }
     }
 }
@@ -23,30 +93,42 @@ public partial class BossPart_Torso : IDamageable{
     public int MaxHealth;
     public float HealthNormalized{
         get{
-            return Health/MaxHealth;
+            return (float)Health/(float)MaxHealth;
         }
     }
     public int Health { 
         get;  
         set;
     }
+    public float InvincibilityDuration { get; set; }
+    public Collider2D torsoHitbox;
+    public IEnumerator MakeInvincible(){
+        torsoHitbox.enabled = false;
+        yield return new WaitForSeconds(InvincibilityDuration);
+        torsoHitbox.enabled = true;
+    }
 
     public void TakeDamage(int damage){
+        StartCoroutine(MakeInvincible());
         this.Health = damage >= Health ? 0 : Health-damage;
+        OnBossTorsoHealthChanged?.Invoke();
     }
 }
 
 public partial class BossPart_Torso : IBossAttack{      
     [Header("General")]
+    public float coolDownInSecond = 3f;
+   
+    [Header("State 1")]
     public Transform attackTarget;
     public GameObject fireballPrefab;
     public Transform firePoint;
     public int numberOfFireballsInCircle;
     public float fireballMoveSpeed;
     
-    [Header("State 1")]
-    public float state1CooldownTime;
     public IEnumerator Attack_State1(){
+        IsThisPartAttacking = true;
+        Boss.NumberOfCurrentlyHappeningAttacks++;
         for(int i = 0; i < numberOfFireballsInCircle; i++){
             float radians = (2 * Mathf.PI / numberOfFireballsInCircle) * i;
 
@@ -59,14 +141,19 @@ public partial class BossPart_Torso : IBossAttack{
 
             fireball.rb.velocity = moveDir * fireballMoveSpeed;
         }
-        yield return new WaitForSeconds(state1CooldownTime);
+        
+        Boss.NumberOfCurrentlyHappeningAttacks--;
+        yield return new WaitForSeconds(coolDownInSecond);
+        IsThisPartAttacking = false;
     }
 
     [Header("State 2")]
     public float numberOfWaves;
     public float timeBetweenCirclesInSecond;
-    public float state2CooldownTime;
     public IEnumerator Attack_State2(){
+        IsThisPartAttacking = true;
+        Boss.NumberOfCurrentlyHappeningAttacks++;
+
         for(int i = 0; i < numberOfWaves; i++){
             for(int j = 0; j < numberOfFireballsInCircle; j++){
                 float radians = (2 * Mathf.PI / numberOfFireballsInCircle) * j + (2 * Mathf.PI / numberOfWaves) * i;
@@ -82,7 +169,10 @@ public partial class BossPart_Torso : IBossAttack{
             }
             yield return new WaitForSeconds(timeBetweenCirclesInSecond);
         }
-        yield return new WaitForSeconds(state2CooldownTime);
+        
+        Boss.NumberOfCurrentlyHappeningAttacks--;
+        yield return new WaitForSeconds(coolDownInSecond);
+        IsThisPartAttacking = false;
     }
 
     [Header("State 3")]
@@ -95,6 +185,9 @@ public partial class BossPart_Torso : IBossAttack{
     public float timeBetweenBeamsInSecond;
     public float timeBetweenStartPointToEndPointInSecond;
     public IEnumerator Attack_State3(){
+        IsThisPartAttacking = true;
+        Boss.NumberOfCurrentlyHappeningAttacks++;
+
         float initialXPosition = attackTarget.position.x;
         float initialYPosition = laserBeamStartPoint.position.y;
         float finalYPosition = laserBeamEndPoint.position.y;
@@ -153,6 +246,10 @@ public partial class BossPart_Torso : IBossAttack{
             right_laserBeams[i].laserBeamLineRenderer.SetPosition(1, Vector3.zero);
             right_laserBeams[i].SetEdgeCollider();
         }
+        
+        Boss.NumberOfCurrentlyHappeningAttacks--;
+        yield return new WaitForSeconds(coolDownInSecond);
+        IsThisPartAttacking = false;
     }
 
     [Header("State 4")]
@@ -164,6 +261,9 @@ public partial class BossPart_Torso : IBossAttack{
     public float energyBallLaserWaitDuration;
     public float laserLength = 10;
     public IEnumerator Attack_State4(){
+        IsThisPartAttacking = true;
+        Boss.NumberOfCurrentlyHappeningAttacks++;
+
         List<GameObject> objects = new List<GameObject>();
         List<Vector3> attackDirections = new List<Vector3>();
 
@@ -215,6 +315,9 @@ public partial class BossPart_Torso : IBossAttack{
         objects.Clear();
         attackDirections.Clear();
 
+        Boss.NumberOfCurrentlyHappeningAttacks--;
+        yield return new WaitForSeconds(coolDownInSecond);
+        IsThisPartAttacking = false;
     }
     
     private Vector3 GetRandomSpawnPosition(){
@@ -225,8 +328,8 @@ public partial class BossPart_Torso : IBossAttack{
         float adjustedCameraHeight = cameraHeight - distanceFromEdges;
         float adjustedCameraWidth = cameraWidth - distanceFromEdges;
 
-        float randomX = Random.Range(-adjustedCameraWidth, adjustedCameraWidth);
-        float randomY = Random.Range(-adjustedCameraHeight, adjustedCameraHeight);
+        float randomX = UnityEngine.Random.Range(-adjustedCameraWidth, adjustedCameraWidth);
+        float randomY = UnityEngine.Random.Range(-adjustedCameraHeight, adjustedCameraHeight);
 
         Vector3 spawnPosition = Camera.main.ViewportToWorldPoint(new Vector3(
             (randomX + adjustedCameraWidth) / (2f * adjustedCameraWidth),
